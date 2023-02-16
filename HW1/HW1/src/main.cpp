@@ -5,8 +5,9 @@ using namespace std;
 
 Gz gz;
 
+// This is run for each line of rects.txt
 void fillRec(int x1, int y1, int x2, int y2, double r, double g, double b, int z) {
-	gz.begin(GZ_POINTS);	//Delimit the vertices of point
+	gz.begin(GZ_POINTS);	//Delimit the vertices of point, tells what type of primitive is used
 	for (int x=x1; x<=x2; x++)
 		for (int y=y1; y<=y2; y++) {
 			gz.addVertex(GzVertex(x, y, z));	//Specify a vertex
@@ -18,7 +19,9 @@ void fillRec(int x1, int y1, int x2, int y2, double r, double g, double b, int z
 void draw() {
 	ifstream fi("rects.txt");
 	int n;
+	// First stream (number of lines) is assigned as n
 	fi>>n;
+	// So, for each line, the rectangle is calculated
 	for (int i=0; i<n; i++) {
 		int x1, y1, x2, y2, z;
 		double r, g, b;
@@ -35,7 +38,7 @@ int main() {
 	gz.clear(GZ_COLOR_BUFFER);			//Clear frame buffer with background color
 	gz.disable(GZ_DEPTH_TEST);			//No depth test
 	draw();
-	gz.toImage().save("NoDepthBuf.bmp");
+	// gz.toImage().save("NoDepthBuf.bmp");
 
 	gz.clearColor(GzColor(1, 1, 1));	//Background color: White
 	gz.enable(GZ_DEPTH_TEST);			//Use depth test
@@ -43,7 +46,7 @@ int main() {
 	gz.clear(GZ_COLOR_BUFFER | GZ_DEPTH_BUFFER);	//Clear frame buffer with background color
 													//Clear depth buffer with default depth
 	draw();
-	gz.toImage().save("WithDepthBuf.bmp");
+	// gz.toImage().save("WithDepthBuf.bmp");
 
 	return 0;
 }

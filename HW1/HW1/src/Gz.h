@@ -9,7 +9,10 @@ using namespace std;
 
 class Gz {
 
-
+/*
+The Gz object contains all of the graphics for a single image, including rendering.
+This is what's used by main.cpp, and it uses all other classes/objects (GzCommon, GzImage, GzFrameBuffer)
+*/
 
 //============================================================================
 //Declarations in Assignment #1

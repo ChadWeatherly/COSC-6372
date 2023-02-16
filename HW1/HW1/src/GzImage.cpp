@@ -1,18 +1,26 @@
 #include "GzImage.h"
 #include "CBitmap.h"
+#include "GzCommon.h"
 
+// Defining the constructors and their functions
+// Sets height and weight to zero
 GzImage::GzImage() {
 	h=w=0;
 }
 
+// resizes image to be size width x height
 GzImage::GzImage(GzInt width, GzInt height) {
 	resize(width, height);
 }
 
+// if character string, takes filename and loads
 GzImage::GzImage(const char* fileName) {
 	load(fileName);
 }
 
+// Defining attributes/methods and their functions
+
+// To load, takes in a const char* string (filename) that is never modified
 GzBool GzImage::load(const char* fileName) {
 	CBitmap bmp;
 	if (!bmp.Load((char*)fileName)) return false;
@@ -65,6 +73,9 @@ GzBool GzImage::resize(GzInt width, GzInt height) {
 	if ((width<0)||(height<0)) return false;
 	h=height;
 	w=width;
+	/* this is a vector.resize() to size w, which works because 'pixel'
+	is a vector of vectors of colors vector<vector<color>>
+	*/
 	pixel.resize(w);
 	clear(GzColor(0, 0, 0));
 	return true;

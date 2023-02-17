@@ -1,5 +1,6 @@
 #include <fstream>
 #include "Gz.h"
+#include <iostream>
 
 using namespace std;
 
@@ -33,12 +34,11 @@ void draw() {
 
 int main() {
 	gz.initFrameSize(640, 480);
-	
 	gz.clearColor(GzColor(0, 0, 0));	//Background color: Black
 	gz.clear(GZ_COLOR_BUFFER);			//Clear frame buffer with background color
 	gz.disable(GZ_DEPTH_TEST);			//No depth test
 	draw();
-	// gz.toImage().save("NoDepthBuf.bmp");
+	gz.toImage().save("NoDepthBuf.bmp");
 
 	gz.clearColor(GzColor(1, 1, 1));	//Background color: White
 	gz.enable(GZ_DEPTH_TEST);			//Use depth test
@@ -46,7 +46,7 @@ int main() {
 	gz.clear(GZ_COLOR_BUFFER | GZ_DEPTH_BUFFER);	//Clear frame buffer with background color
 													//Clear depth buffer with default depth
 	draw();
-	// gz.toImage().save("WithDepthBuf.bmp");
+	gz.toImage().save("WithDepthBuf.bmp");
 
 	return 0;
 }

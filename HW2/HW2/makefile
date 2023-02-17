@@ -1,8 +1,8 @@
 SRC_DIR = src
 SOURCES = $(wildcard $(SRC_DIR)/*.cpp)
 OBJECTS = $(SOURCES:$(SRC_DIR)/%.cpp=%.o)
-EXEC = hw
-COMPILER = clang++
+EXEC = hw2
+COMPILER = g++
 DELETE = rm
 
 $(EXEC) : $(OBJECTS)

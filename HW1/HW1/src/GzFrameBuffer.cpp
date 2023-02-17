@@ -5,7 +5,8 @@
 void GzFrameBuffer::initFrameSize(GzInt width, GzInt height) {
     w = width;
     h = height;
-    clear_depth = 100;
+    clear_depth = -100;
+    pixel_depth.resize(width);
     // internal_buffer is the image being created
     internal_buffer.resize(width, height);
     for (GzInt x=0; x<w; x++) 

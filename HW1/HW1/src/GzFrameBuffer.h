@@ -19,6 +19,9 @@ public:
 	void setClearColor(const GzColor& color); // Sets color to clear the buffer screen with
 	void setClearDepth(GzReal depth); // Sets depth at which to clear all values past
 
+	GzInt get_depth(GzInt x, GzInt y);
+	GzBool set_depth(GzInt x, GzInt y, GzInt d);
+
 	void drawPoint(const GzVertex& v, const GzColor& c, GzFunctional status);
 
 private:
@@ -26,7 +29,7 @@ private:
 	GzInt w;
 	GzInt h;
 	GzColor clear_color;
-	GzInt clear_depth; // Any Z greater than -100 will be drawn
+	GzInt clear_depth; // Any Z greater than this will be drawn
 	GzImage internal_buffer;
 	vector<vector<GzInt> > pixel_depth;
 };

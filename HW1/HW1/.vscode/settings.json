@@ -2,5 +2,12 @@
     "files.associations": {
         "iostream": "cpp",
         "vector": "cpp"
-    }
+    },
+    "makefile.launchConfigurations": [
+        {
+            "cwd": "/Users/chadw/Library/CloudStorage/OneDrive-UniversityOfHouston/School/Computer_Graphics/COSC-6372/HW1/HW1",
+            "binaryPath": "/Users/chadw/Library/CloudStorage/OneDrive-UniversityOfHouston/School/Computer_Graphics/COSC-6372/HW1/HW1/hw",
+            "binaryArgs": []
+        }
+    ]
 }

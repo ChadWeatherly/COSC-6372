@@ -75,7 +75,17 @@ void Gz::end() {
 			//   - Pop 3 colors in the colorQueue
 			//   - Call the draw triangle function 
 			//     (you may put this function in GzFrameBuffer)
+			while ( (vertexQueue.size()>=1) && (colorQueue.size()>=1) ) {
+				GzVertex v1=vertexQueue.front(); vertexQueue.pop();
+				GzVertex v2=vertexQueue.front(); vertexQueue.pop();
+				GzVertex v3=vertexQueue.front(); vertexQueue.pop();
 
+				GzColor c1=colorQueue.front(); colorQueue.pop();
+				GzColor c2=colorQueue.front(); colorQueue.pop(); 
+				GzColor c3=colorQueue.front(); colorQueue.pop();
+
+				frameBuffer.drawTriangle(v1, v2, v3, c1, c2, c3, status);
+			}
 		}
 	}
 }

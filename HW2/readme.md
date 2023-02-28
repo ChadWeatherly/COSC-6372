@@ -12,7 +12,7 @@ For my method, I first created a new structure in GzCommomon, ```GzTriangle```, 
 
 I then re-created the GzFrameBuffer class with the following methods (new methods/attributes to HW2 are bold):
 
-- ```initFramSize()``1, which takes in width and height values and initializes the buffer screen with these dimensions.
+- ```initFramSize()```, which takes in width and height values and initializes the buffer screen with these dimensions.
 - ```toImage```, which outputs the buffer as a ```GzImage``` object.
 - ```clear```, which clears the buffer screen at z-value ```clear_depth``` or lower with the ```clear_color```.
 - ```setClearColor```, which sets the ```clear_color``` attribute with an input ```GzColor``` object.

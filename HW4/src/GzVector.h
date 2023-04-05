@@ -23,7 +23,6 @@ GzVector operator + (const GzVector& a, const GzVector& b);
 GzVector operator - (const GzVector& a, const GzVector& b);
 GzReal dotProduct(const GzVector& a, const GzVector& b);
 GzVector crossProduct(const GzVector& a, const GzVector& b);
-
 GzVector operator * (GzReal a, const GzVector& b);
 GzVector operator * (const GzVector& a, GzReal b);
 GzVector operator / (const GzVector& a, GzReal b);

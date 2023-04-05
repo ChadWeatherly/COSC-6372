@@ -1,4 +1,5 @@
 #include "Gz.h"
+#include <iostream>
 
 
 
@@ -109,6 +110,8 @@ void Gz::lookAt(GzReal eyeX, GzReal eyeY, GzReal eyeZ, GzReal centerX, GzReal ce
 
 
 	translate(-eyeX, -eyeY, -eyeZ);
+
+
 }
 
 void Gz::multMatrix(GzMatrix mat) {
@@ -209,6 +212,7 @@ void Gz::orthographic(GzReal left, GzReal right, GzReal bottom, GzReal top, GzRe
 
 void Gz::addNormal(const GzVector& v) {
 	GzVector vn=v;
+	// All normal vectors have length = 1
 	vn.normalize();
 	normalQueue.push(vn);
 }
@@ -218,11 +222,14 @@ void Gz::shadeModel(const GzInt model) {
 }
 
 void Gz::material(GzReal _kA, GzReal _kD, GzReal _kS, GzReal _s) {
-	frameBuffer.material(_kA, _kD, _kS, _s);
+	kA=_kA;
+	kD=_kD;
+	kS=_kS;
+	s=_s;
 }
 	
 void Gz::addLight(const GzVector& v, const GzColor& c) {
-	frameBuffer.addLight(v, c);
+	lightVecs.push_back(v); lightColors.push_back(c);
 }
 
 void Gz::end() {
@@ -230,16 +237,97 @@ void Gz::end() {
 	//Remember to pop normal vectors from normalQueue.
 	//Note that if GZ_LIGHTING is turned off, we just need to use the old drawing functions from HW3.
 	if (get(GZ_LIGHTING)) {
-		frameBuffer.loadLightTrans(transMatrix);
+		
 		switch (currentPrimitive) {
+
 			case GZ_POINTS: {
 			//Put your points shading code here. You might copy and modify the source in assignment 2.
+			while ( (vertexQueue.size()>=1) && (colorQueue.size()>=1) ) {
+				GzVertex v=vertexQueue.front(); vertexQueue.pop();
+				GzColor c=colorQueue.front(); colorQueue.pop();
+				frameBuffer.drawPoint(v, c, status);
+
 			} break;
+			}
+
 			case GZ_TRIANGLES: {
 			//Put your triangles shading code here. You might copy and modify the source in assignment 2.
-			} break;
+				while ( (vertexQueue.size()>=3) && (colorQueue.size()>=3) && (normalQueue.size()>=3)) {
+					vector<GzVertex> v(3);	// Vertices
+					vector<GzVertex> tv(3); // Transformed vertices
+					vector<GzColor> c(3);
+					vector<GzVector> n(3);
+					for (int i=0; i<3; i++) {
+						v[i]=vertexQueue.front(); 
+						tv[i] = transAll(vertexQueue.front()); vertexQueue.pop();
+						c[i]=colorQueue.front(); colorQueue.pop();
+						n[i]=normalQueue.front(); normalQueue.pop();
+					}
+					
+					vector<GzColor> new_c(3);
+
+					// Tranforming all vectors and then using them to get colors of vertices
+					vector<GzVector> translightVecs(lightVecs.size());
+					for (int l=0; l<lightVecs.size(); l++) {
+						GzMatrix mat_light;
+						mat_light.fromVector(lightVecs[l]);
+						mat_light = transMatrix*mat_light;
+						translightVecs[l] = mat_light.toVector();
+					}
+
+					GzVector transN;
+					GzVertex transV;
+
+					// Iterate for each vertex in the triangle
+					for (int i=0; i<3; i++) {
+						// normal vector n, transformed
+						GzMatrix mat_n;
+						mat_n.fromVector(n[i]);
+						mat_n = transMatrix*mat_n;
+						transN = mat_n.toVector();
+
+						// Vertex i of triangle, transformed
+						GzMatrix mat_v;
+						mat_v.fromVertex(v[i]);
+						mat_v = transMatrix*mat_v;
+						transV = mat_v.toVertex();
+
+						// Calculating color of vertex transV (v transformed into new space along with other vectors)
+						GzColor transColor = GzColor(0,0,0);
+
+						// Adding each light to vertex
+						for (int l=0; l<translightVecs.size(); l++) {
+							GzVector lv = translightVecs[l];
+							GzColor lc = lightColors[l];
+
+							// For each value in RGB of that vertex
+							for (int j=0; j<3; j++) {
+								GzVector h = lv; h.normalize(); // h = l + v, but the viewer position (v) is (0,0,0),
+																// since everything has been transformed and centered at the viewer. Therefore, h = l
+								GzReal z = 0;
+								GzReal val1 = dotProduct(transN, lv);
+								GzReal val2 = dotProduct(transN, h);
+								GzReal one = 255;
+								transColor[j] = min(one, transColor[j] + lc[j]*(kA + (kD*max(z, val1)) + kS*pow(max(z, val2), s))) / 255;
+							}
+
+						}
+						cout << transColor[0] << " " << transColor[1] << " " << transColor[2] << "\n";
+						new_c[i] = transColor;
+					}
+
+
+
+					frameBuffer.drawTriangle(tv[0], tv[1], tv[2], new_c[0], new_c[1], new_c[2], status);
+					
+				}
+
+						
+			} 
 		}
-	} else {
+	}
+	 // if there is no lighting/shading, then this code block is run
+	 else {
 		switch (currentPrimitive) {
 			case GZ_POINTS: {
 				while ( (vertexQueue.size()>=1) && (colorQueue.size()>=1) ) {
@@ -256,7 +344,7 @@ void Gz::end() {
 						v[i]=transAll(vertexQueue.front()); vertexQueue.pop();
 						c[i]=colorQueue.front(); colorQueue.pop();
 					}
-					frameBuffer.drawTriangle(v, c, status);
+					frameBuffer.drawTriangle(v[0], v[1], v[2], c[0], c[1], c[2], status);
 				}
 			}
 		}

@@ -95,8 +95,12 @@ public:
 																			//	_kS: The specular coefficients
 																			//	_s: The spec power
 	void addNormal(const GzVector& v);	//Specify a normal vector
+
 private:
 	queue<GzVector> normalQueue;			//Store normal vectors in queue for rendering
+	vector<GzVector> lightVecs;
+	vector<GzColor> lightColors;
+	GzReal kA, kD, kS, s;
 //============================================================================
 //End of Declarations in Assignment #4
 //============================================================================

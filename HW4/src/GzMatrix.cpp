@@ -48,6 +48,32 @@ void GzMatrix::fromVertex(const GzVertex& v) {
 	at(2)[0]=v[Z];
 	at(3)[0]=1;
 }
+
+void GzMatrix::fromVector(const GzVector& v) {
+	//Convert from vertex, w is set to 1
+	//See http://en.wikipedia.org/wiki/Homogeneous_coordinates#Use_in_computer_graphics
+	//    http://en.wikipedia.org/wiki/Transformation_matrix
+	//Or google: "homogeneous coordinates"
+	resize(4, 1);
+	at(0)[0]=v[X];
+	at(1)[0]=v[Y];
+	at(2)[0]=v[Z];
+	at(3)[0]=1;
+}
+
+GzVector GzMatrix::toVector() {
+	assert((nRow()==4)&&(nCol()==1));
+	//Convert to vertex, remember to divide X, Y, Z coordinates by W
+	//See http://en.wikipedia.org/wiki/Homogeneous_coordinates#Use_in_computer_graphics
+	//    http://en.wikipedia.org/wiki/Transformation_matrix
+	//Or google: "homogeneous coordinates"
+	GzVector v;
+	GzReal w=at(3)[0];
+	v[X]=at(0)[0]/w;
+	v[Y]=at(1)[0]/w;
+	v[Z]=at(2)[0]/w;
+	return v;
+}
 //----------------------------------------------------------------------------
 
 

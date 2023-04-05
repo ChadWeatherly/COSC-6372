@@ -24,19 +24,30 @@ public:
 	void setClearColor(const GzColor& color);
 	void setClearDepth(GzReal depth);
 
+	GzInt get_depth(GzInt x, GzInt y);
+	GzBool set_depth(GzInt x, GzInt y, GzInt d);
+
+	GzInt get_width();
+	GzInt get_height();
+
 	void drawPoint(const GzVertex& v, const GzColor& c, GzFunctional status);
-	void drawTriangle(vector<GzVertex>& v, vector<GzColor>& c, GzFunctional status);
+	double find_intersection(double x1, double y1, double m, double y);
+	vector<double> interpolate(const GzTriangle& tri, double x, double y);
+
+	vector<int> MapToPixels(double x, double y, const GzTriangle& t);
+
+	void drawTriangle(const GzVertex& v1, const GzVertex& v2, const GzVertex& v3, 
+						const GzColor& c1, const GzColor& c2, const GzColor& c3, 
+						GzFunctional status);
 
 private:
 	//Put any variables and private functions for your implementation here
+	GzInt w;
+	GzInt h;
 	GzImage image;
 	vector<vector<GzReal> > depthBuffer;
 	GzColor clearColor;
 	GzReal clearDepth;
-
-	void realInterpolate(GzReal key1, GzReal val1, GzReal key2, GzReal val2, GzReal key, GzReal& val);
-	void colorInterpolate(GzReal key1, GzColor& val1, GzReal key2, GzColor& val2, GzReal key, GzColor& val);
-	void drawRasLine(GzInt y, GzReal xMin, GzReal zMin, GzColor& cMin, GzReal xMax, GzReal zMax, GzColor& cMax, GzFunctional status);
 
 //============================================================================
 //End of Declarations in Assignment #1, 2, 3
@@ -49,16 +60,18 @@ private:
 //============================================================================
 public:
 	void shadeModel(const GzInt model);						//Set the current shade model (curShadeModel)
-	void addLight(const GzVector& v, const GzColor& c);		//Add a light source at position p with color c
 	void material(GzReal _kA, GzReal _kD, GzReal _kS, GzReal _s);		//Specify the meterial of the object, includes:
 																			//	_kA: The ambient coefficients
 																			//	_kD: The diffuse coefficients
 																			//	_kS: The specular coefficients
 																			//	_s: The spec power
+	GzTriangle addShading(GzTriangle t);					// if curShadeModel > 0, then the transformed triangle is shaded
 
 private:
-	GzInt curShadeModel;
-	GzReal kA, kD, kS, s;
+	GzInt curShadeModel = 0;
+	
+	
+	
 //============================================================================
 //End of Declarations in Assignment #4
 //============================================================================

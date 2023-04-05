@@ -47,7 +47,7 @@ int main() {
 	gz.material(0.1, 0.3, 0.6, 3);		//Ambient, diffuse, specular, spec power
 
 	
-	
+	// = 1, shades by vertex
 	gz.shadeModel(GZ_GOURAUD);
 	
 	gz.lookAt(	10, 10, 10,	//Eye position 
@@ -57,7 +57,7 @@ int main() {
 					-1.8, 1.8,	//Bottom and Top
 					1, 10);	//zNear and zFar
 	gz.translate(0, -1, 0);
-	draw("GouraudTeaPot1.bmp");
+	draw("output/GouraudTeaPot1.bmp");
 	
 	gz.lookAt(	3, 3, 3,	//Eye position 
 				0, 0, 0,	//Look at
@@ -68,10 +68,10 @@ int main() {
 	gz.rotate(45, 1, 0, 0);
 	gz.translate(0, -1, 0);
 
-	draw("GouraudTeaPot2.bmp");
+	draw("output/GouraudTeaPot2.bmp");
 
 	
-	
+	// = 2, shades by pixel
 	gz.shadeModel(GZ_PHONG);
 
 	gz.lookAt(	10, 10, 10,	//Eye position 
@@ -81,7 +81,7 @@ int main() {
 					-1.8, 1.8,	//Bottom and Top
 					1, 10);	//zNear and zFar
 	gz.translate(0, -1, 0);
-	draw("PhongTeaPot1.bmp");
+	draw("output/PhongTeaPot1.bmp");
 	
 	gz.lookAt(	3, 3, 3,	//Eye position 
 				0, 0, 0,	//Look at
@@ -92,7 +92,7 @@ int main() {
 	gz.rotate(45, 1, 0, 0);
 	gz.translate(0, -1, 0);
 
-	draw("PhongTeaPot2.bmp");
+	draw("output/PhongTeaPot2.bmp");
 		
 	return 0;
 }

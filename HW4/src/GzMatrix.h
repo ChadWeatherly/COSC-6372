@@ -24,6 +24,8 @@ public:
 	//GzMatrix is a 4 by 1 vector: [0][0]=X, [1][0]=Y, [2][0]=Z, [3][0]=W
 	GzVertex toVertex();						//Convert to vertex
 	void fromVertex(const GzVertex& v);			//Convert from vertex
+	void fromVector(const GzVector& v);			// Convert from vector
+	GzVector toVector();						// Convert to vector
 	GzMatrix inverse3x3();						//Return the inverse of the 3 by 3 matrix
 	GzMatrix transpose();						//Return the transopose matrix
 };

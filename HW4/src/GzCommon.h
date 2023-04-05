@@ -73,6 +73,86 @@ struct GzColor:public vector<GzReal> {
 #define GZ_TRIANGLES 1
 //----------------------------------------------------------------------------
 
+// Triangle struct
+struct GzTriangle {
+	// Contains all vertices and colors, ordered from lowest x >> highest x
+	vector<GzVertex> v;
+	vector<GzColor> c;
+
+	float x_min; float x_max;
+	float y_min; float y_max;
+
+	/*
+	These are the line slopes between each vertex, m:
+
+	m = (y2 - y1) / (x2 - x1)
+
+	Because we want to be able to find the intersections for a given y
+	*/
+	double m12; double m23; double m13;
+
+	// Constructor
+	GzTriangle(GzVertex v1, GzVertex v2, GzVertex v3, GzColor c1, GzColor c2, GzColor c3) {
+
+		// Brute force ordering from lowest x >> highest x
+		if (v1[0] <= v2[0]) {
+			if (v2[0] <= v3[0]) {
+				v.push_back(v1); v.push_back(v2); v.push_back(v3);
+				c.push_back(c1); c.push_back(c2); c.push_back(c3);
+			}
+			else if (v3[0] <= v1[0]) {
+				v.push_back(v3); v.push_back(v1); v.push_back(v2);
+				c.push_back(c3); c.push_back(c1); c.push_back(c2);
+			}
+			else {
+				v.push_back(v1); v.push_back(v3); v.push_back(v2);
+				c.push_back(c1); c.push_back(c3); c.push_back(c2);
+			}
+		}
+
+		else {
+			if (v1[0] <= v3[0]) {
+				v.push_back(v2); v.push_back(v1); v.push_back(v3);
+				c.push_back(c2); c.push_back(c1); c.push_back(c3);
+			}
+			else if (v3[0] <= v2[0]) {
+				v.push_back(v3); v.push_back(v2); v.push_back(v1);
+				c.push_back(c3); c.push_back(c2); c.push_back(c1);
+			}
+			else {
+				v.push_back(v2); v.push_back(v3); v.push_back(v1);
+				c.push_back(c2); c.push_back(c3); c.push_back(c1);
+			}
+		}
+
+		// finding x_min and x_max
+		x_min = v[0][0]; x_max = v[2][0];	
+
+		// finding y_min and y_max
+		y_min = v1[1]; y_max = v1[1];
+
+		if (v2[1] < y_min) {
+			y_min = v2[1];
+		}
+		else if (v2[1] > y_max) {
+			y_max = v2[1];
+		}
+
+		if (v3[1] < y_min) {
+			y_min = v3[1];
+		}
+		else if (v3[1] > y_max) {
+			y_max = v3[1];
+		}
+
+	// Calculating line segments
+	m12 = (v[1][1] - v[0][1]) / (v[1][0] - v[0][0]);
+	m23 = (v[2][1] - v[1][1]) / (v[2][0] - v[1][0]);
+	m13 = (v[2][1] - v[0][1]) / (v[2][0] - v[0][0]);
+	}
+
+};
+
 //============================================================================
 //End of Declarations in Assignment #2
 //============================================================================

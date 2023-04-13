@@ -43,8 +43,7 @@ __Results__
 
 I took some time to really understand the projections and transformations, as well as what they were doing. Because of this, I was able to pretty successfully code this assignment and have valid results. Below are my outputs compared with the given outputs by the TA:
 
-### Orthographic Projection (TeaPot1)
-
+| ### Orthographic Projection (TeaPot1) |
 My results            |  Given results
 :-------------------------:|:-------------------------:
 ![](output/TeaPot1.bmp)  |  ![](TeaPot1.bmp)

@@ -77,6 +77,7 @@ private:
 
 	//Design function
 	GzVertex transAll(GzVertex& v);
+	
 //============================================================================
 //End of Declarations in Assignment #3
 //============================================================================
@@ -112,6 +113,8 @@ public:
 	void addTexCoord(const GzTexCoord& tc);		//Specify the texture coordinate
 private:
 	queue<GzTexCoord> texCoordQueue;	//Store texture coordinates in queue for rendering
+	GzImage tex;
+	GzInt projection;
 
 	//Design function
 //============================================================================

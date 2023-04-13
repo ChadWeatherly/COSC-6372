@@ -36,7 +36,16 @@ public:
 	void drawPointWLight(const GzVertex& v, const GzColor& c, const GzVector& n, GzFunctional status);
 	void drawTriangleWLight(vector<GzVertex>& v, vector<GzColor>& c, vector<GzVector>& n, GzFunctional status);
 
+	// Texturing, HW5 implementations
 	void texture(const GzImage& t);
+
+	vector<GzVertex> MapVToPixels(vector<GzVertex>& v);
+	vector<GzTexCoord> MapUToPixels(vector<GzTexCoord>& u);
+
+	GzReal TriangleArea(const GzVertex& p1, const GzVertex& p2, const GzVertex& p3);
+
+	void drawTexScanline(const GzInt& y, const vector<GzVertex>& v, const vector<GzTexCoord>& uv, const vector<GzReal>& mins, const vector<GzReal>& maxs, const GzFunctional& status, GzInt projection);
+	void drawTexTriangle(vector<GzVertex>& v, vector<GzTexCoord>& uv, GzInt projection, const GzFunctional& status);
 
 
 private:
@@ -60,6 +69,9 @@ private:
 
 	void drawRasLineWLight(GzInt y, GzReal xMin, GzReal zMin, GzColor& cMin, GzVector& nMin, GzReal xMax, GzReal zMax, GzColor& cMax, GzVector& nMax, GzFunctional status);
 	GzColor colorWLight(GzColor c, GzVector n);
+
+	// Texture
+	GzImage tex;
 
 };
 //----------------------------------------------------------------------------

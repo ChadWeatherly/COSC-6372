@@ -104,6 +104,9 @@ struct GzColor:public vector<GzReal> {
 
 //Funtional constants---------------------------------------------------------
 #define GZ_TEXTURE 0x00000010
+#define GZ_ORTHO 0
+#define GZ_PERSPECTIVE 1
+
 //----------------------------------------------------------------------------
 
 //Texture coordinate data type------------------------------------------------

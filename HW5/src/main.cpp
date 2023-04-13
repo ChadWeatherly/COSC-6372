@@ -51,7 +51,7 @@ int main() {
 					-6, 6,	//Bottom and Top
 					1, 10);	//zNear and zFar
 	gz.translate(0, -1, 0);
-	draw("TeaPot1.bmp");
+	draw("output/TeaPot1.bmp");
 	
 	gz.lookAt(	15, 15, -15,	//Eye position 
 				0, 0, 0,	//Look at
@@ -62,6 +62,6 @@ int main() {
 	gz.rotate(-20, 0, 1, 0);
 	gz.translate(1, 5, 0);
 
-	draw("TeaPot2.bmp");		
+	draw("output/TeaPot2.bmp");		
 	return 0;
 }

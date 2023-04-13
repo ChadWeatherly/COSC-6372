@@ -1,5 +1,5 @@
 #include "Gz.h"
-
+#include <iostream>
 
 
 //============================================================================
@@ -60,8 +60,8 @@ GzVertex Gz::transAll(GzVertex& v) {
 	res.fromVertex(v);
 	res=prjMatrix*transMatrix*res;
 	GzVertex vRes=res.toVertex();
-	vRes[X]=(vRes[X]+1)*wViewport/2+xViewport;
-	vRes[Y]=(vRes[Y]+1)*hViewport/2+yViewport;
+	// vRes[X]=(vRes[X]+1)*wViewport/2+xViewport;
+	// vRes[Y]=(vRes[Y]+1)*hViewport/2+yViewport;
 	return vRes;
 }
 
@@ -177,6 +177,8 @@ void Gz::perspective(GzReal fovy, GzReal aspect, GzReal zNear, GzReal zFar) {
 	prjMatrix[2][2]=-(zFar+zNear)/(zNear-zFar);
 	prjMatrix[2][3]=-2*zFar*zNear/(zNear-zFar);
 	prjMatrix[3][2]=-1;
+
+	projection = GZ_PERSPECTIVE;
 }
 
 void Gz::orthographic(GzReal left, GzReal right, GzReal bottom, GzReal top, GzReal nearVal, GzReal farVal) {
@@ -194,6 +196,8 @@ void Gz::orthographic(GzReal left, GzReal right, GzReal bottom, GzReal top, GzRe
 	prjMatrix[0][0]=2/(right-left);
 	prjMatrix[1][1]=2/(top-bottom);
 	prjMatrix[2][2]=2/(farVal-nearVal);
+
+	projection = GZ_ORTHO;
 }
 //End of Projections----------------------------------------------------------
 
@@ -235,11 +239,12 @@ void Gz::addLight(const GzVector& v, const GzColor& c) {
 //Implementations in Assignment #5
 //============================================================================
 void Gz::texture(const GzImage& t) {
-
+	tex = t;
+	frameBuffer.texture(tex);
 }
 
 void Gz::addTexCoord(const GzTexCoord& tc) {
-
+	texCoordQueue.push(tc);
 }
 
 void Gz::end() {
@@ -248,53 +253,68 @@ void Gz::end() {
 	//Note that in this assignment, we only consider texture mapping without lighting.
 	//Also we only need to implement the triangle rasterization.
 	
+	// If textures is turned on
 	if (get(GZ_TEXTURE)) {
 
+		// for the sake of this HW, GZ assumes that textures are applied on triangles
+		
+		while ( (vertexQueue.size()>=3) && (texCoordQueue.size()>=3) ) {
+						vector<GzVertex> v(3);
+						vector<GzTexCoord> uv(3);
+						for (int i=0; i<3; i++) {
+							v[i] = transAll(vertexQueue.front()); vertexQueue.pop();
+							uv[i] = texCoordQueue.front(); texCoordQueue.pop();
+						}
+						frameBuffer.drawTexTriangle(v, uv, projection, status);
+		}
 	}
 
-	if (get(GZ_LIGHTING)) {
-		frameBuffer.loadLightTrans(transMatrix);
-		switch (currentPrimitive) {
-			case GZ_POINTS: {
-				while ( (vertexQueue.size()>=1) && (colorQueue.size()>=1) && (normalQueue.size()>=1)) {
-					GzVertex v=transAll(vertexQueue.front()); vertexQueue.pop();
-					GzColor c=colorQueue.front(); colorQueue.pop();
-					GzVector n=normalQueue.front(); normalQueue.pop();
-					frameBuffer.drawPointWLight(v, c, n, status);
-				}
-			} break;
-			case GZ_TRIANGLES: {
-				while ( (vertexQueue.size()>=3) && (colorQueue.size()>=3) && (normalQueue.size()>=3)) {
-					vector<GzVertex> v(3);
-					vector<GzColor> c(3);
-					vector<GzVector> n(3);
-					for (int i=0; i<3; i++) {
-						v[i]=transAll(vertexQueue.front()); vertexQueue.pop();
-						c[i]=colorQueue.front(); colorQueue.pop();
-						n[i]=normalQueue.front(); normalQueue.pop();
+	// No textures
+	else {
+		if (get(GZ_LIGHTING)) {
+			frameBuffer.loadLightTrans(transMatrix);
+			switch (currentPrimitive) {
+				case GZ_POINTS: {
+					while ( (vertexQueue.size()>=1) && (colorQueue.size()>=1) && (normalQueue.size()>=1)) {
+						GzVertex v=transAll(vertexQueue.front()); vertexQueue.pop();
+						GzColor c=colorQueue.front(); colorQueue.pop();
+						GzVector n=normalQueue.front(); normalQueue.pop();
+						frameBuffer.drawPointWLight(v, c, n, status);
 					}
-					frameBuffer.drawTriangleWLight(v, c, n, status);
-				}
-			} break;
-		}
-	} else {
-		switch (currentPrimitive) {
-			case GZ_POINTS: {
-				while ( (vertexQueue.size()>=1) && (colorQueue.size()>=1) ) {
-					GzVertex v=transAll(vertexQueue.front()); vertexQueue.pop();
-					GzColor c=colorQueue.front(); colorQueue.pop();
-					frameBuffer.drawPoint(v, c, status);
-				}
-			} break;
-			case GZ_TRIANGLES: {
-				while ( (vertexQueue.size()>=3) && (colorQueue.size()>=3) ) {
-					vector<GzVertex> v(3);
-					vector<GzColor> c(3);
-					for (int i=0; i<3; i++) {
-						v[i]=transAll(vertexQueue.front()); vertexQueue.pop();
-						c[i]=colorQueue.front(); colorQueue.pop();
+				} break;
+				case GZ_TRIANGLES: {
+					while ( (vertexQueue.size()>=3) && (colorQueue.size()>=3) && (normalQueue.size()>=3)) {
+						vector<GzVertex> v(3);
+						vector<GzColor> c(3);
+						vector<GzVector> n(3);
+						for (int i=0; i<3; i++) {
+							v[i]=transAll(vertexQueue.front()); vertexQueue.pop();
+							c[i]=colorQueue.front(); colorQueue.pop();
+							n[i]=normalQueue.front(); normalQueue.pop();
+						}
+						frameBuffer.drawTriangleWLight(v, c, n, status);
 					}
-					frameBuffer.drawTriangle(v, c, status);
+				} break;
+			}
+		} else {
+			switch (currentPrimitive) {
+				case GZ_POINTS: {
+					while ( (vertexQueue.size()>=1) && (colorQueue.size()>=1) ) {
+						GzVertex v=transAll(vertexQueue.front()); vertexQueue.pop();
+						GzColor c=colorQueue.front(); colorQueue.pop();
+						frameBuffer.drawPoint(v, c, status);
+					}
+				} break;
+				case GZ_TRIANGLES: {
+					while ( (vertexQueue.size()>=3) && (colorQueue.size()>=3) ) {
+						vector<GzVertex> v(3);
+						vector<GzColor> c(3);
+						for (int i=0; i<3; i++) {
+							v[i]=transAll(vertexQueue.front()); vertexQueue.pop();
+							c[i]=colorQueue.front(); colorQueue.pop();
+						}
+						frameBuffer.drawTriangle(v, c, status);
+					}
 				}
 			}
 		}
